@@ -6,4 +6,7 @@ export interface IBookingRequestType {
   bookingDate: Date;
   productService: ProductType;
   status: BookingStatus;
+  customerId: string;
+  orderId: string;
+  productId: number;
 }
