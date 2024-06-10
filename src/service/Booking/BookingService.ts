@@ -9,11 +9,25 @@ class BookingService {
           bookingDate: payload.bookingDate,
           carType: payload.carType,
           licensePlate: payload.licensePlat,
-          customerId: payload.customerId,
-          orderId: payload.orderId,
-          productId: payload.productId,
-          timeslotId: payload.timeslotId,
           status: payload.status,
+          customerId: payload.customerId,
+          timeslotId: payload.timeslotId,
+          amount: payload.amount,
+          receipt: payload.receipt,
+          promo: {
+            connect: payload.promo?.map((pr) => {
+              return {
+                id: pr.id,
+              };
+            }),
+          },
+          product: {
+            connect: payload.product.map((pd) => {
+              return {
+                id: pd.id,
+              };
+            }),
+          },
         },
       });
 
@@ -47,6 +61,20 @@ class BookingService {
     }
   }
 
+  async getCustomerBooking(customerId: string) {
+    try {
+      const bookings = await prisma.booking.findMany({
+        where: {
+          customerId,
+        },
+      });
+
+      return bookings;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async cancelBooking(bookingId: string) {
     try {
       const booking = await prisma.booking.delete({
@@ -72,10 +100,22 @@ class BookingService {
           carType: payload.carType,
           licensePlate: payload.licensePlat,
           customerId: payload.customerId,
-          orderId: payload.orderId,
-          productId: payload.productId,
           timeslotId: payload.timeslotId,
           status: payload.status,
+          promo: {
+            connect: payload.promo?.map((pr) => {
+              return {
+                id: pr.id,
+              };
+            }),
+          },
+          product: {
+            connect: payload.product.map((pd) => {
+              return {
+                id: pd.id,
+              };
+            }),
+          },
         },
       });
 

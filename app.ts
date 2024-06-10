@@ -18,6 +18,9 @@ import PromoRoute from './src/routes/Promo/PromoRoute';
 import ProductService from './src/service/Product/ProductService';
 import ProductController from './src/controllers/Product/ProductController';
 import ProductRoute from './src/routes/Product/ProductRoute';
+import BookingService from './src/service/Booking/BookingService';
+import BookingController from './src/controllers/Booking/BookingController';
+import BookingRoute from './src/routes/Booking/BookingRoute';
 
 const app: Express = express();
 
@@ -30,6 +33,7 @@ const CustomerServiceInit = new CustomerService();
 const TimeslotServiceInit = new TimeslotService();
 const PromoServiceInit = new PromoService();
 const ProductServiceInit = new ProductService();
+const BookingServiceInit = new BookingService();
 
 // todo initialize Controller
 const UserControllerInit = new UserController(UserServiceInit);
@@ -37,6 +41,7 @@ const CustomerControllerInit = new CustomerController(CustomerServiceInit);
 const TimeslotControllerInit = new TimeslotController(TimeslotServiceInit);
 const PromoControllerInit = new PromoController(PromoServiceInit);
 const ProductControllerInit = new ProductController(ProductServiceInit);
+const BookingControllerInit = new BookingController(BookingServiceInit);
 
 // todo initialize Route
 const AuthRoute = new AuthRouter();
@@ -45,6 +50,7 @@ const CustomerRouteInit = new CustomerRoute(CustomerControllerInit);
 const TimelostRouteInit = new TimeslotRoute(TimeslotControllerInit);
 const PromoRouteInit = new PromoRoute(PromoControllerInit);
 const ProductRouteInit = new ProductRoute(ProductControllerInit);
+const BookingRouteInit = new BookingRoute(BookingControllerInit);
 
 app.use(cookieParser());
 
@@ -54,6 +60,7 @@ app.use(`${process.env.API_URL}/customer`, CustomerRouteInit.getRouter());
 app.use(`${process.env.API_URL}/timeslot`, TimelostRouteInit.getRouter());
 app.use(`${process.env.API_URL}/promo`, PromoRouteInit.getRouter());
 app.use(`${process.env.API_URL}/product`, ProductRouteInit.getRouter());
+app.use(`${process.env.API_URL}/booking`, BookingRouteInit.getRouter());
 
 const server = http.createServer(app);
 

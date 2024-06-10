@@ -39,25 +39,20 @@ model Booking {
   licensePlate String
   bookingDate DateTime
   timeslotId Int
+  amount Int
+  receipt String?
   timeslot   Timeslot  @relation(fields: [timeslotId], references: [id])
-  // productService ProductType
   customerId  String
   customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   status BookingStatus @default(UNCONFIRMATION)
-  orderId String @unique
-  order Order @relation(fields: [orderId], references: [id])
-  productId Int 
-  product Product @relation(fields: [productId], references: [id])
+  // productId Int 
+  // product Product @relation(fields: [productId], references: [id])
+  product Product[]
+  paymentStatus PaymentStatus @default(PENDING)
+  promo Promo[]
+  
 }
 
-model Order {
-  id String @id @default(uuid())
-  amount Int
-  status PaymentStatus @default(PENDING)
-  receipt String?
-  booking Booking?
-  promo Promo[]
-}
 
 model Timeslot {
   id        Int       @id @default(autoincrement())
@@ -80,7 +75,7 @@ model Promo {
   id Int @id @default(autoincrement())
   promoName String
   discount Int
-  orders Order[]
+  booking Booking[]
   startedDate DateTime
   endDate DateTime
 }
