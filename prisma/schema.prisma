@@ -9,6 +9,109 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  email String @unique
+  password String
+  role Role @default(CUSTOMER)
+  customer Customer[]
+  
+  timeslot Timeslot[] 
+}
+
+model Customer {
+  id  String  @id @default(uuid())
+  name  String
+  phoneNumber String
+  userId  String
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking[]
+}
+
+model Booking {
+  id String @id @default(uuid())
+  carType String
+  licensePlate String
+  bookingDate DateTime
+  timeslotId Int
+  timeslot   Timeslot  @relation(fields: [timeslotId], references: [id])
+  // productService ProductType
+  customerId  String
+  customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status BookingStatus @default(UNCONFIRMATION)
+  orderId String @unique
+  order Order @relation(fields: [orderId], references: [id])
+  productId Int 
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id String @id @default(uuid())
+  amount Int
+  status PaymentStatus @default(PENDING)
+  receipt String?
+  booking Booking?
+  promo Promo[]
+}
+
+model Timeslot {
+  id        Int       @id @default(autoincrement())
+  day       DAY
+  time      DateTime
+  adminId   String
+  admin     User    @relation(fields: [adminId], references: [id])
+  avaiableTime Boolean @default(false)
+  bookings  Booking[]
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  productName ProductType
+  price Int
+  bookings Booking[]
+}
+
+model Promo {
+  id Int @id @default(autoincrement())
+  promoName String
+  discount Int
+  orders Order[]
+  startedDate DateTime
+  endDate DateTime
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum ProductType {
+  SERVICE
+  WASH
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+enum DAY {
+  MINGGU
+  SENIN
+  SELASA
+  RABU
+  KAMIS
+  JUMAT
+  SABTU
+}
+
+enum BookingStatus {
+  CONFIRMATION
+  UNCONFIRMATION
 }
