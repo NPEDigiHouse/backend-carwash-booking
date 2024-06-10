@@ -6,6 +6,10 @@ class PromoController {
 
   constructor(service: PromoService) {
     this.service = service;
+    this.getAllPromo = this.getAllPromo.bind(this);
+    this.createPromo = this.createPromo.bind(this);
+    this.deletePromo = this.deletePromo.bind(this);
+    this.updatePromo = this.updatePromo.bind(this);
   }
 
   async getAllPromo(req: Request, res: Response, next: NextFunction) {

@@ -18,8 +18,7 @@ class CustomerRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.customerController.getAllCustomer(req, res, next),
+      this.customerController.getAllCustomer,
     );
   }
 

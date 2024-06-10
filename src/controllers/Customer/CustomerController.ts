@@ -6,6 +6,7 @@ class CustomerController {
 
   constructor(service: CustomerService) {
     this.service = service;
+    this.getAllCustomer = this.getAllCustomer.bind(this);
   }
 
   async getAllCustomer(req: Request, res: Response, next: NextFunction) {

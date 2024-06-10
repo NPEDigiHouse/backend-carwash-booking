@@ -18,8 +18,7 @@ class PromoRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.promoController.getAllPromo(req, res, next),
+      this.promoController.getAllPromo,
     );
   }
 
@@ -28,8 +27,7 @@ class PromoRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.promoController.createPromo(req, res, next),
+      this.promoController.createPromo,
     );
   }
 
@@ -38,8 +36,7 @@ class PromoRoute {
       '/:PromoId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.promoController.updatePromo(req, res, next),
+      this.promoController.updatePromo,
     );
   }
 
@@ -48,8 +45,7 @@ class PromoRoute {
       '/:PromoId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.promoController.deletePromo(req, res, next),
+      this.promoController.deletePromo,
     );
   }
 
