@@ -9,6 +9,9 @@ class UserController {
 
   constructor(services: UserServices) {
     this.services = services;
+    this.getAllUsers = this.getAllUsers.bind(this);
+    this.createUser = this.createUser.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -36,8 +39,6 @@ class UserController {
         data: user,
       });
     } catch (error) {
-      console.log('error : ', error);
-
       next(error);
     }
   }

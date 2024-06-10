@@ -18,8 +18,8 @@ class UserRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.userController.getAllUsers(req, res, next),
+
+      this.userController.getAllUsers,
     );
   }
 
@@ -28,8 +28,7 @@ class UserRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.userController.createUser(req, res, next),
+      this.userController.createUser,
     );
   }
 
@@ -38,8 +37,7 @@ class UserRoute {
       '/:userId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.userController.deleteUser(req, res, next),
+      this.userController.deleteUser,
     );
   }
 

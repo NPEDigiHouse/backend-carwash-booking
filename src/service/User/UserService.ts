@@ -15,6 +15,12 @@ class UserServices {
         },
         skip: pagination?.skip,
         take: pagination?.take,
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          role: true,
+        },
       });
 
       return users;
@@ -39,6 +45,12 @@ class UserServices {
               phoneNumber: payload.customer.phoneNumber,
             },
           },
+        },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          role: true,
         },
       });
 
