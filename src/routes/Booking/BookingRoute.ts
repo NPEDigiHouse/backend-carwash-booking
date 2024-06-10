@@ -17,7 +17,6 @@ class BookingRoute {
     return this.route.post(
       '/',
       authToken,
-      checkAdminAccees,
       this.bookingController.createBooking,
     );
   }
@@ -26,7 +25,6 @@ class BookingRoute {
     return this.route.get(
       '/:customerId',
       authToken,
-      checkAdminAccees,
       this.bookingController.getCustomerBooking,
     );
   }
