@@ -12,16 +12,11 @@ class ProductRoute {
     this.registerRoute();
   }
 
-  getAllPromosRoute() {
-    return this.route.get(
-      '/',
-      authToken,
-      checkAdminAccees,
-      this.productController.getAllProduct,
-    );
+  getAllProductsRoute() {
+    return this.route.get('/', authToken, this.productController.getAllProduct);
   }
 
-  createPromo() {
+  createProduct() {
     return this.route.post(
       '/',
       authToken,
@@ -30,18 +25,18 @@ class ProductRoute {
     );
   }
 
-  updatePromo() {
+  updateProduct() {
     return this.route.put(
-      '/:PromoId',
+      '/:ProductId',
       authToken,
       checkAdminAccees,
       this.productController.updateProduct,
     );
   }
 
-  deletePromo() {
+  deleteProduct() {
     return this.route.delete(
-      '/:PromoId',
+      '/:ProductId',
       authToken,
       checkAdminAccees,
       this.productController.deleteProduct,
@@ -49,10 +44,10 @@ class ProductRoute {
   }
 
   registerRoute(): Router {
-    this.getAllPromosRoute();
-    this.createPromo();
-    this.deletePromo();
-    this.updatePromo();
+    this.getAllProductsRoute();
+    this.createProduct();
+    this.deleteProduct();
+    this.updateProduct();
 
     return this.route;
   }
