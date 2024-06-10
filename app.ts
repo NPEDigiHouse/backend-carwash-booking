@@ -15,6 +15,9 @@ import TimeslotRoute from './src/routes/Timeslot/TimeslotRoute';
 import PromoService from './src/service/Promo/PromoService';
 import PromoController from './src/controllers/Promo/PromoController';
 import PromoRoute from './src/routes/Promo/PromoRoute';
+import ProductService from './src/service/Product/ProductService';
+import ProductController from './src/controllers/Product/ProductController';
+import ProductRoute from './src/routes/Product/ProductRoute';
 
 const app: Express = express();
 
@@ -26,12 +29,14 @@ const UserServiceInit = new UserServices();
 const CustomerServiceInit = new CustomerService();
 const TimeslotServiceInit = new TimeslotService();
 const PromoServiceInit = new PromoService();
+const ProductServiceInit = new ProductService();
 
 // todo initialize Controller
 const UserControllerInit = new UserController(UserServiceInit);
 const CustomerControllerInit = new CustomerController(CustomerServiceInit);
 const TimeslotControllerInit = new TimeslotController(TimeslotServiceInit);
 const PromoControllerInit = new PromoController(PromoServiceInit);
+const ProductControllerInit = new ProductController(ProductServiceInit);
 
 // todo initialize Route
 const AuthRoute = new AuthRouter();
@@ -39,6 +44,7 @@ const UserRouteInit = new UserRoute(UserControllerInit);
 const CustomerRouteInit = new CustomerRoute(CustomerControllerInit);
 const TimelostRouteInit = new TimeslotRoute(TimeslotControllerInit);
 const PromoRouteInit = new PromoRoute(PromoControllerInit);
+const ProductRouteInit = new ProductRoute(ProductControllerInit);
 
 app.use(cookieParser());
 
@@ -46,7 +52,8 @@ app.use(`${process.env.API_URL}/auth`, AuthRoute.getAllAuthRouter());
 app.use(`${process.env.API_URL}/users`, UserRouteInit.getRouter());
 app.use(`${process.env.API_URL}/customer`, CustomerRouteInit.getRouter());
 app.use(`${process.env.API_URL}/timeslot`, TimelostRouteInit.getRouter());
-app.use(`${process.env.API_URL}/promos`, PromoRouteInit.getRouter());
+app.use(`${process.env.API_URL}/promo`, PromoRouteInit.getRouter());
+app.use(`${process.env.API_URL}/product`, ProductRouteInit.getRouter());
 
 const server = http.createServer(app);
 
