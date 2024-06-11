@@ -6,6 +6,10 @@ class TimeslotController {
 
   constructor(service: TimeslotService) {
     this.service = service;
+    this.getAllTimeslots = this.getAllTimeslots.bind(this);
+    this.createTimeslot = this.createTimeslot.bind(this);
+    this.updateTimeslot = this.updateTimeslot.bind(this);
+    this.deleteTimeslot = this.deleteTimeslot.bind(this);
   }
 
   async getAllTimeslots(req: Request, res: Response, next: NextFunction) {
@@ -17,13 +21,20 @@ class TimeslotController {
         data: timeslots,
       });
     } catch (error) {
-      throw error;
+      next(error);
     }
   }
 
   async createTimeslot(req: Request, res: Response, next: NextFunction) {
     try {
       const payload = req.body;
+
+      const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+      if (!timeRegex.test(payload.time)) {
+        throw new Error('Invalid time format please use HH:MM format time');
+      }
+
       const timeslot = await this.service.createTimeslot(payload);
 
       return res.json({
@@ -31,7 +42,7 @@ class TimeslotController {
         data: timeslot,
       });
     } catch (error) {
-      throw error;
+      next(error);
     }
   }
 
@@ -46,7 +57,7 @@ class TimeslotController {
         data: timeslot,
       });
     } catch (error) {
-      throw error;
+      next(error);
     }
   }
 
@@ -66,10 +77,10 @@ class TimeslotController {
           data: timeslot,
         });
       } catch (error) {
-        throw error;
+        next(error);
       }
     } catch (error) {
-      throw error;
+      next(error);
     }
   }
 }

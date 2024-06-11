@@ -8,7 +8,7 @@ class TimeslotService {
         data: {
           day: payload.day,
           time: payload.time,
-          avaiableTime: payload.avaiableTime,
+          avaiableTime: true,
           adminId: payload.adminId,
         },
       });
@@ -62,6 +62,8 @@ class TimeslotService {
       throw error;
     }
   }
+
+  async checkAvaiableTimeslot() {}
 }
 
 export default TimeslotService;

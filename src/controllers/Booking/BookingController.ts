@@ -8,6 +8,8 @@ class BookingController {
     this.service = service;
     this.createBooking = this.createBooking.bind(this);
     this.getCustomerBooking = this.getCustomerBooking.bind(this);
+    this.cancelCustomerBooking = this.cancelCustomerBooking.bind(this);
+    this.getAllBookings = this.getAllBookings.bind(this);
   }
 
   async createBooking(req: Request, res: Response, next: NextFunction) {
@@ -31,6 +33,33 @@ class BookingController {
 
       return res.json({
         message: 'Berhasil mendapatkan data booking customer',
+        data: bookings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAllBookings(req: Request, res: Response, next: NextFunction) {
+    try {
+      const bookings = await this.service.getAllBooking();
+
+      return res.json({
+        message: 'Berhasil mendapatkan data booking',
+        data: bookings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async cancelCustomerBooking(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { bookingId } = req.params;
+      const bookings = await this.service.cancelBooking(bookingId);
+
+      return res.json({
+        message: 'Berhasil membatalkan booking',
         data: bookings,
       });
     } catch (error) {

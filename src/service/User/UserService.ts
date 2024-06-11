@@ -10,9 +10,9 @@ class UserServices {
   async getAllUsers(pagination?: { skip: number; take: number }) {
     try {
       const users = await prisma.user.findMany({
-        where: {
-          role: 'CUSTOMER',
-        },
+        // where: {
+        //   role: 'CUSTOMER',
+        // },
         skip: pagination?.skip,
         take: pagination?.take,
         select: {
@@ -20,6 +20,24 @@ class UserServices {
           email: true,
           username: true,
           role: true,
+        },
+      });
+
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // async getAdminDetail(userId: string) {
+
+  // }
+
+  async getUserDetail(userId: string) {
+    try {
+      const users = await prisma.user.findFirst({
+        where: {
+          id: userId,
         },
       });
 

@@ -29,8 +29,28 @@ class BookingRoute {
     );
   }
 
+  getAllBookingsRoute() {
+    return this.route.get(
+      '/',
+      authToken,
+      checkAdminAccees,
+      this.bookingController.getAllBookings,
+    );
+  }
+
+  cancelCustomerBookingRoute() {
+    return this.route.delete(
+      '/:bookingId',
+      authToken,
+      this.bookingController.cancelCustomerBooking,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllCustomerBookingsRoute();
+    this.createBookingRoute();
+    this.cancelCustomerBookingRoute();
+    this.getAllBookingsRoute();
 
     return this.route;
   }

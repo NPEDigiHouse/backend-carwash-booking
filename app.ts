@@ -21,6 +21,8 @@ import ProductRoute from './src/routes/Product/ProductRoute';
 import BookingService from './src/service/Booking/BookingService';
 import BookingController from './src/controllers/Booking/BookingController';
 import BookingRoute from './src/routes/Booking/BookingRoute';
+import AuthServices from './src/service/Auth/AuthService';
+import AuthController from './src/controllers/Auth/AuthController';
 
 const app: Express = express();
 
@@ -28,6 +30,7 @@ app.use(express.json());
 app.use(cors());
 
 // todo initialize Services
+const AuthServiceInit = new AuthServices();
 const UserServiceInit = new UserServices();
 const CustomerServiceInit = new CustomerService();
 const TimeslotServiceInit = new TimeslotService();
@@ -36,6 +39,7 @@ const ProductServiceInit = new ProductService();
 const BookingServiceInit = new BookingService();
 
 // todo initialize Controller
+const AuthControllerInit = new AuthController(AuthServiceInit, UserServiceInit);
 const UserControllerInit = new UserController(UserServiceInit);
 const CustomerControllerInit = new CustomerController(CustomerServiceInit);
 const TimeslotControllerInit = new TimeslotController(TimeslotServiceInit);
@@ -44,7 +48,7 @@ const ProductControllerInit = new ProductController(ProductServiceInit);
 const BookingControllerInit = new BookingController(BookingServiceInit);
 
 // todo initialize Route
-const AuthRoute = new AuthRouter();
+const AuthRoute = new AuthRouter(AuthControllerInit);
 const UserRouteInit = new UserRoute(UserControllerInit);
 const CustomerRouteInit = new CustomerRoute(CustomerControllerInit);
 const TimelostRouteInit = new TimeslotRoute(TimeslotControllerInit);
@@ -54,7 +58,7 @@ const BookingRouteInit = new BookingRoute(BookingControllerInit);
 
 app.use(cookieParser());
 
-app.use(`${process.env.API_URL}/auth`, AuthRoute.getAllAuthRouter());
+app.use(`${process.env.API_URL}/auth`, AuthRoute.getRouter());
 app.use(`${process.env.API_URL}/users`, UserRouteInit.getRouter());
 app.use(`${process.env.API_URL}/customer`, CustomerRouteInit.getRouter());
 app.use(`${process.env.API_URL}/timeslot`, TimelostRouteInit.getRouter());

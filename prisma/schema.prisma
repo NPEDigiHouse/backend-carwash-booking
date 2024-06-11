@@ -39,7 +39,7 @@ model Booking {
   licensePlate String
   bookingDate DateTime
   timeslotId Int
-  amount Int
+  amount Int? @default(0)
   receipt String?
   timeslot   Timeslot  @relation(fields: [timeslotId], references: [id])
   customerId  String
@@ -57,7 +57,7 @@ model Booking {
 model Timeslot {
   id        Int       @id @default(autoincrement())
   day       DAY
-  time      DateTime
+  time      String
   adminId   String
   admin     User    @relation(fields: [adminId], references: [id])
   avaiableTime Boolean @default(false)

@@ -18,8 +18,7 @@ class TimeslotRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.timeslotController.getAllTimeslots(req, res, next),
+      this.timeslotController.getAllTimeslots,
     );
   }
 
@@ -28,8 +27,7 @@ class TimeslotRoute {
       '/',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.timeslotController.createTimeslot(req, res, next),
+      this.timeslotController.createTimeslot,
     );
   }
 
@@ -38,8 +36,7 @@ class TimeslotRoute {
       '/:timeslotId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.timeslotController.updateTimeslot(req, res, next),
+      this.timeslotController.updateTimeslot,
     );
   }
 
@@ -48,13 +45,13 @@ class TimeslotRoute {
       '/:timeslotId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.timeslotController.deleteTimeslot(req, res, next),
+      this.timeslotController.deleteTimeslot,
     );
   }
 
   registerRoute(): Router {
     this.getAllTimeslotsRoute();
+    this.createTimeslot();
 
     return this.route;
   }

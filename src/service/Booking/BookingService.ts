@@ -4,34 +4,93 @@ import { IBookingRequestType } from '../../core/interfaces/request/IBookingReque
 class BookingService {
   async createBooking(payload: IBookingRequestType) {
     try {
-      const booking = await prisma.booking.create({
-        data: {
-          bookingDate: payload.bookingDate,
-          carType: payload.carType,
-          licensePlate: payload.licensePlat,
-          status: payload.status,
-          customerId: payload.customerId,
-          timeslotId: payload.timeslotId,
-          amount: payload.amount,
-          receipt: payload.receipt,
-          promo: {
-            connect: payload.promo?.map((pr) => {
-              return {
-                id: pr.id,
-              };
-            }),
+      // const booking = await prisma.booking.create({
+      //   data: {
+      //     bookingDate: payload.bookingDate,
+      //     carType: payload.carType,
+      //     licensePlate: payload.licensePlat,
+      //     status: payload.status,
+      //     customerId: payload.customerId,
+      //     timeslotId: payload.timeslotId,
+      //     amount: payload.amount,
+      //     receipt: payload.receipt,
+      //     promo: {
+      //       connect: payload.promo?.map((pr) => {
+      //         return {
+      //           id: pr.id,
+      //         };
+      //       }),
+      //     },
+      //     product: {
+      //       connect: payload.product.map((pd) => {
+      //         return {
+      //           id: pd.id,
+      //         };
+      //       }),
+      //     },
+      //   },
+      // });
+
+      const bookingTr = await prisma.$transaction(async (db) => {
+        const products = await db.product.findMany({
+          where: {
+            id: { in: payload.product.map((pd) => pd.id) },
           },
-          product: {
-            connect: payload.product.map((pd) => {
-              return {
-                id: pd.id,
-              };
-            }),
+        });
+
+        const promos = !payload.promo
+          ? []
+          : await db.promo.findMany({
+              where: {
+                id: { in: payload.promo?.map((pr) => pr.id) },
+              },
+            });
+
+        let totalAmount = products.reduce(
+          (sum, product) => sum + product.price,
+          0,
+        );
+
+        // Kurangi diskon promo
+        const totalDiscount = promos.reduce(
+          (sum, promo) => sum + promo.discount,
+          0,
+        );
+        const discountAmount = totalAmount * (totalDiscount / 100);
+
+        totalAmount -= discountAmount;
+
+        const booking = await db.booking.create({
+          data: {
+            bookingDate: payload.bookingDate,
+            carType: payload.carType,
+            licensePlate: payload.licensePlat,
+            status: payload.status,
+            customerId: payload.customerId,
+            timeslotId: payload.timeslotId,
+            amount: totalAmount,
+            receipt: payload.receipt,
+            promo: {
+              connect: payload.promo?.map((pr) => {
+                return {
+                  id: pr.id,
+                };
+              }),
+            },
+            product: {
+              connect: payload.product.map((pd) => {
+                return {
+                  id: pd.id,
+                };
+              }),
+            },
           },
-        },
+        });
+
+        return booking;
       });
 
-      return booking;
+      return bookingTr;
     } catch (error) {
       throw error;
     }
@@ -141,6 +200,8 @@ class BookingService {
       throw error;
     }
   }
+
+  async totalBookingChart() {}
 }
 
 export default BookingService;

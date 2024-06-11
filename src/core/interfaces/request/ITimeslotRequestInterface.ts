@@ -2,7 +2,7 @@ import { DAY } from '@prisma/client';
 
 export interface ITimeslotRequestInterface {
   day: DAY;
-  time: Date;
+  time: string;
   adminId: string;
   avaiableTime: boolean;
 }
