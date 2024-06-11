@@ -2,23 +2,37 @@ import { Router, RouterOptions } from 'express';
 import AuthController from '../../controllers/Auth/AuthController';
 import { routerConfig } from '../../config/routes/RoutesConfig';
 
-const AuthControllerInit = new AuthController();
-
 class AuthRouter {
-  router = routerConfig;
+  router: Router;
+  authController: AuthController;
+
+  constructor(authController: AuthController) {
+    this.authController = authController;
+    this.router = Router();
+    this.register();
+  }
 
   loginRoute() {
-    return this.router.post('/login', AuthControllerInit.login);
+    return this.router.post('/login', this.authController.login);
   }
 
   registerRoute() {
-    return this.router.post('/register', AuthControllerInit.register);
+    return this.router.post('/register', this.authController.register);
   }
 
-  getAllAuthRouter() {
+  credential() {
+    return this.router.get('/credential', this.authController.credentials);
+  }
+
+  register() {
     this.loginRoute();
     this.registerRoute();
+    this.credential();
 
+    return this.router;
+  }
+
+  getRouter() {
     return this.router;
   }
 }
