@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import BookingService from '../../service/Booking/BookingService';
+import moment from 'moment';
 
 class BookingController {
   service: BookingService;
@@ -46,7 +47,23 @@ class BookingController {
 
       return res.json({
         message: 'Berhasil mendapatkan data booking',
-        data: bookings,
+        data: bookings.map((booking) => {
+          return {
+            id: booking.id,
+            name: booking.customer.name,
+            phoneNumber: booking.customer.phoneNumber,
+            carType: booking.carType,
+            carPlate: booking.licensePlate,
+            status: booking.status,
+            amount: booking.amount,
+            bookingDate: moment(booking.bookingDate).format('DD MMM YYYY'),
+            bookingTime: booking.timeslot.time,
+            service: `Car ${booking.product.productName.toLowerCase()}`,
+            promo: !booking.promo
+              ? 'tidak menggunakan promo'
+              : booking.promo.promoName,
+          };
+        }),
       });
     } catch (error) {
       console.log('error : ', error);
