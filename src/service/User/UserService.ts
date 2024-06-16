@@ -39,6 +39,17 @@ class UserServices {
         where: {
           id: userId,
         },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          role: true,
+          customer: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
       return users;
@@ -134,6 +145,43 @@ class UserServices {
               phoneNumber: payload.customer.phoneNumber,
             },
           },
+        },
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changeProfilePicture(userId: string, profilePicture: string) {
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          profilePicture,
+        },
+        select: {
+          profilePicture: true,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUserProfilePicture(userId: string) {
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          id: userId,
+        },
+        select: {
+          profilePicture: true,
         },
       });
 

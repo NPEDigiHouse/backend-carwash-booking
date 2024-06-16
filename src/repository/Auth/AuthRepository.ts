@@ -16,7 +16,7 @@ class AuthRepositoryImp {
       });
 
       if (!user) {
-        throw Error;
+        throw new Error('Email atau password salah');
       }
 
       const checkPassword = BcryptLibsUtil.compareBcrypt(
@@ -35,7 +35,7 @@ class AuthRepositoryImp {
 
       return generateToken;
     } catch (error) {
-      throw Error;
+      throw error;
     }
   }
 
@@ -48,6 +48,12 @@ class AuthRepositoryImp {
           email: payload.email,
           password: hashPassword,
           username: payload.username,
+          customer: {
+            create: {
+              name: payload.customer.name,
+              phoneNumber: payload.customer.phoneNumber,
+            },
+          },
         },
       });
 

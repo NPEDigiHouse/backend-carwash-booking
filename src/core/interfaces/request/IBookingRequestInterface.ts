@@ -10,14 +10,15 @@ import {
 
 export interface IBookingRequestType {
   carType: string;
-  licensePlat: string;
-  bookingDate: Date;
+  licensePlate: string;
   status: BookingStatus;
   customerId: string;
   timeslotId: number;
   amount: number;
   paymentStatus: PaymentStatus;
   receipt: string;
-  promo?: IPromoRequestParamsRelationType[];
-  product: IProductRequestParamsRelationType[];
+  // promo?: IPromoRequestParamsRelationType[];
+  // product: IProductRequestParamsRelationType[];
+  promoId: number;
+  productId: number;
 }

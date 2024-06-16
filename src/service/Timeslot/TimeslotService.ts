@@ -6,10 +6,9 @@ class TimeslotService {
     try {
       const timeslot = await prisma.timeslot.create({
         data: {
-          day: payload.day,
           time: payload.time,
+          date: payload.date,
           avaiableTime: true,
-          adminId: payload.adminId,
         },
       });
 
@@ -21,7 +20,7 @@ class TimeslotService {
 
   async getAllTimeslot() {
     try {
-      const timeslots = await prisma.timeslot.findMany();
+      const timeslots = await prisma.timeslot.findMany({});
 
       return timeslots;
     } catch (error) {
@@ -29,16 +28,18 @@ class TimeslotService {
     }
   }
 
-  async deleteTimeslot(timelostId: number) {
+  async deleteTimeslot(timeslotId: number) {
     try {
       const timeslot = await prisma.timeslot.delete({
         where: {
-          id: timelostId,
+          id: timeslotId,
         },
       });
 
       return timeslot;
     } catch (error) {
+      console.log('service error : ', error);
+
       throw error;
     }
   }
@@ -50,10 +51,9 @@ class TimeslotService {
           id: timeslotId,
         },
         data: {
-          day: payload.day,
           time: payload.time,
-          adminId: payload.adminId,
-          avaiableTime: payload.avaiableTime,
+          date: payload.date,
+          avaiableTime: true,
         },
       });
 

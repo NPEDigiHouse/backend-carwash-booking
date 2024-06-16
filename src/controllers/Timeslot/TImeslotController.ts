@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import TimeslotService from '../../service/Timeslot/TimeslotService';
+import moment from 'moment';
 
 class TimeslotController {
   service: TimeslotService;
@@ -16,9 +17,22 @@ class TimeslotController {
     try {
       const timeslots = await this.service.getAllTimeslot();
 
+      console.log('timeslot : ', timeslots[0].date);
+      console.log(
+        'timeslot moment convert : ',
+        moment(timeslots[0].date).format(),
+      );
+
       return res.json({
         message: 'Berhasil mendapatkan semua data timeslot',
-        data: timeslots,
+        data: timeslots.map((timeslot) => {
+          return {
+            id: timeslot.id,
+            time: timeslot.time,
+            date: moment(timeslot.date).format('DD MMMM YYYY'),
+            avaiableTime: timeslot.avaiableTime,
+          };
+        }),
       });
     } catch (error) {
       next(error);
@@ -48,15 +62,17 @@ class TimeslotController {
 
   async deleteTimeslot(req: Request, res: Response, next: NextFunction) {
     try {
-      const { timelostId } = req.params;
+      const { timeslotId } = req.params;
 
-      const timeslot = await this.service.deleteTimeslot(Number(timelostId));
+      const timeslot = await this.service.deleteTimeslot(Number(timeslotId));
 
       return res.json({
         message: 'Berhasil mendapatkan semua data timeslot',
         data: timeslot,
       });
     } catch (error) {
+      console.log(error);
+
       next(error);
     }
   }

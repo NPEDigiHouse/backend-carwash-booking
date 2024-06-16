@@ -49,6 +49,8 @@ class BookingController {
         data: bookings,
       });
     } catch (error) {
+      console.log('error : ', error);
+
       next(error);
     }
   }

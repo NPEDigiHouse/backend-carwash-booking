@@ -27,7 +27,7 @@ class ProductRoute {
 
   updateProduct() {
     return this.route.put(
-      '/:ProductId',
+      '/:productId',
       authToken,
       checkAdminAccees,
       this.productController.updateProduct,
@@ -36,7 +36,7 @@ class ProductRoute {
 
   deleteProduct() {
     return this.route.delete(
-      '/:ProductId',
+      '/:productId',
       authToken,
       checkAdminAccees,
       this.productController.deleteProduct,

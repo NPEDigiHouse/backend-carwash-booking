@@ -52,6 +52,7 @@ class TimeslotRoute {
   registerRoute(): Router {
     this.getAllTimeslotsRoute();
     this.createTimeslot();
+    this.deleteTimeslot();
 
     return this.route;
   }

@@ -12,6 +12,9 @@ class UserController {
     this.getAllUsers = this.getAllUsers.bind(this);
     this.createUser = this.createUser.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.changeProfilePicture = this.changeProfilePicture.bind(this);
+    this.getUserProfilePicture = this.getUserProfilePicture.bind(this);
   }
 
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
@@ -68,6 +71,40 @@ class UserController {
 
       return res.json({
         message: 'Berhasil mengubah data user',
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async changeProfilePicture(req: Request, res: Response, next: NextFunction) {
+    try {
+      const params = req.params;
+      const profilePicture = req.file?.filename as any;
+
+      const user = await this.services.changeProfilePicture(
+        params.userId,
+        profilePicture,
+      );
+
+      return res.json({
+        message: 'Berhasil mengubah foto profil',
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserProfilePicture(req: Request, res: Response, next: NextFunction) {
+    try {
+      const params = req.params;
+
+      const user = await this.services.getUserProfilePicture(params.userId);
+
+      return res.json({
+        message: 'Berhasil mendampatkan foto profil',
         data: user,
       });
     } catch (error) {

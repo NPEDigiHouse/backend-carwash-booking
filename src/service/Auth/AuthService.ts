@@ -3,6 +3,7 @@ import {
   IAuthLoginRequestType,
   IAuthRegisterRequestType,
 } from '../../core/interfaces/auth/IAuthRequestInterface';
+import CustomError from '../../utils/common/CustomError';
 import { BcryptLibsUtil } from '../../utils/libs/BcryptLibs';
 import { TokenLibsUtils } from '../../utils/libs/TokenLibs';
 
@@ -16,7 +17,7 @@ class AuthServices {
       });
 
       if (!user) {
-        throw Error;
+        throw new CustomError('Email atau password salah', 401);
       }
 
       const checkPassword = BcryptLibsUtil.compareBcrypt(
@@ -25,7 +26,7 @@ class AuthServices {
       );
 
       if (!checkPassword) {
-        throw new Error('Email atau password salah');
+        throw new CustomError('Email atau password salah', 401);
       }
 
       const generateToken = TokenLibsUtils.signToken({
@@ -35,7 +36,7 @@ class AuthServices {
 
       return generateToken;
     } catch (error) {
-      throw Error;
+      throw error;
     }
   }
 
@@ -48,6 +49,12 @@ class AuthServices {
           email: payload.email,
           password: hashPassword,
           username: payload.username,
+          customer: {
+            create: {
+              name: payload.customer.name,
+              phoneNumber: payload.customer.phoneNumber,
+            },
+          },
         },
       });
 

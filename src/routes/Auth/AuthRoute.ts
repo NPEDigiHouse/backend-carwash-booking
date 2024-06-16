@@ -1,6 +1,7 @@
 import { Router, RouterOptions } from 'express';
 import AuthController from '../../controllers/Auth/AuthController';
 import { routerConfig } from '../../config/routes/RoutesConfig';
+import { authToken } from '../../middleware/AuthMiddleware';
 
 class AuthRouter {
   router: Router;
@@ -21,7 +22,11 @@ class AuthRouter {
   }
 
   credential() {
-    return this.router.get('/credential', this.authController.credentials);
+    return this.router.get(
+      '/credential',
+      authToken,
+      this.authController.credentials,
+    );
   }
 
   register() {

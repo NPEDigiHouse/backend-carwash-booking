@@ -23,11 +23,16 @@ import BookingController from './src/controllers/Booking/BookingController';
 import BookingRoute from './src/routes/Booking/BookingRoute';
 import AuthServices from './src/service/Auth/AuthService';
 import AuthController from './src/controllers/Auth/AuthController';
+import path from 'path';
+import { ErrorHandler } from './src/middleware/ErrorMiddleware';
+import PublicRoute from './src/routes/Public/PublicRoute';
 
 const app: Express = express();
 
 app.use(express.json());
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // todo initialize Services
 const AuthServiceInit = new AuthServices();
@@ -55,6 +60,7 @@ const TimelostRouteInit = new TimeslotRoute(TimeslotControllerInit);
 const PromoRouteInit = new PromoRoute(PromoControllerInit);
 const ProductRouteInit = new ProductRoute(ProductControllerInit);
 const BookingRouteInit = new BookingRoute(BookingControllerInit);
+const PublicRouteInit = new PublicRoute(ProductControllerInit);
 
 app.use(cookieParser());
 
@@ -65,6 +71,10 @@ app.use(`${process.env.API_URL}/timeslot`, TimelostRouteInit.getRouter());
 app.use(`${process.env.API_URL}/promo`, PromoRouteInit.getRouter());
 app.use(`${process.env.API_URL}/product`, ProductRouteInit.getRouter());
 app.use(`${process.env.API_URL}/booking`, BookingRouteInit.getRouter());
+app.use(`${process.env.API_URL}/public`, PublicRouteInit.getRouter());
+
+// error middleware
+app.use(ErrorHandler);
 
 const server = http.createServer(app);
 

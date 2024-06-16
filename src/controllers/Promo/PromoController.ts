@@ -46,7 +46,7 @@ class PromoController {
       const promo = await this.service.deletePromo(Number(promoId));
 
       return res.json({
-        message: 'Berhasil membuat promo',
+        message: 'Berhasil menghapus promo',
         data: promo,
       });
     } catch (error) {

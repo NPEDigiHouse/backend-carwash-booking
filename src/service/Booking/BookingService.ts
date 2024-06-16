@@ -1,89 +1,76 @@
 import prisma from '../../config/database';
 import { IBookingRequestType } from '../../core/interfaces/request/IBookingRequestInterface';
+import CustomError from '../../utils/common/CustomError';
 
 class BookingService {
   async createBooking(payload: IBookingRequestType) {
     try {
-      // const booking = await prisma.booking.create({
-      //   data: {
-      //     bookingDate: payload.bookingDate,
-      //     carType: payload.carType,
-      //     licensePlate: payload.licensePlat,
-      //     status: payload.status,
-      //     customerId: payload.customerId,
-      //     timeslotId: payload.timeslotId,
-      //     amount: payload.amount,
-      //     receipt: payload.receipt,
-      //     promo: {
-      //       connect: payload.promo?.map((pr) => {
-      //         return {
-      //           id: pr.id,
-      //         };
-      //       }),
-      //     },
-      //     product: {
-      //       connect: payload.product.map((pd) => {
-      //         return {
-      //           id: pd.id,
-      //         };
-      //       }),
-      //     },
-      //   },
-      // });
-
       const bookingTr = await prisma.$transaction(async (db) => {
-        const products = await db.product.findMany({
+        const customerBooking = await db.booking.findFirst({
           where: {
-            id: { in: payload.product.map((pd) => pd.id) },
+            customerId: payload.customerId,
+            productId: payload.productId,
           },
         });
 
-        const promos = !payload.promo
-          ? []
-          : await db.promo.findMany({
+        const product = await db.product.findFirst({
+          where: {
+            id: payload.productId,
+          },
+        });
+
+        if (customerBooking) {
+          throw new CustomError(
+            `Booking untuk product car ${product?.productName.toLowerCase()} sudah dibuat, mohon batalkan lebih dulu`,
+            404,
+          );
+        }
+
+        const promo = !payload.promoId
+          ? null
+          : await db.promo.findFirst({
               where: {
-                id: { in: payload.promo?.map((pr) => pr.id) },
+                id: payload.promoId,
               },
             });
 
-        let totalAmount = products.reduce(
-          (sum, product) => sum + product.price,
-          0,
-        );
+        const bookingDate = await db.timeslot.findFirst({
+          where: {
+            id: payload.timeslotId,
+          },
+        });
 
-        // Kurangi diskon promo
-        const totalDiscount = promos.reduce(
-          (sum, promo) => sum + promo.discount,
-          0,
-        );
-        const discountAmount = totalAmount * (totalDiscount / 100);
-
-        totalAmount -= discountAmount;
+        const discountAmount =
+          !product?.price && !promo?.discount
+            ? product?.price
+            : product!.price * (promo!.discount / 100);
 
         const booking = await db.booking.create({
           data: {
-            bookingDate: payload.bookingDate,
+            bookingDate: bookingDate?.date!,
             carType: payload.carType,
-            licensePlate: payload.licensePlat,
+            licensePlate: payload.licensePlate,
             status: payload.status,
             customerId: payload.customerId,
             timeslotId: payload.timeslotId,
-            amount: totalAmount,
+            amount: discountAmount,
             receipt: payload.receipt,
-            promo: {
-              connect: payload.promo?.map((pr) => {
-                return {
-                  id: pr.id,
-                };
-              }),
-            },
-            product: {
-              connect: payload.product.map((pd) => {
-                return {
-                  id: pd.id,
-                };
-              }),
-            },
+            // promo: {
+            //   connect: payload.promo?.map((pr) => {
+            //     return {
+            //       id: pr.id,
+            //     };
+            //   }),
+            // },
+            // product: {
+            //   connect: payload.product.map((pd) => {
+            //     return {
+            //       id: pd.id,
+            //     };
+            //   }),
+            // },
+            promoId: payload.promoId,
+            productId: payload.productId,
           },
         });
 
@@ -98,7 +85,38 @@ class BookingService {
 
   async getAllBooking() {
     try {
-      const bookings = await prisma.booking.findMany();
+      const bookings = await prisma.booking.findMany({
+        select: {
+          id: true,
+          customer: {
+            select: {
+              name: true,
+              phoneNumber: true,
+            },
+          },
+          carType: true,
+          licensePlate: true,
+          paymentStatus: true,
+          status: true,
+          amount: true,
+          bookingDate: true,
+          timeslot: {
+            select: {
+              time: true,
+            },
+          },
+          product: {
+            select: {
+              productName: true,
+            },
+          },
+          promo: {
+            select: {
+              promoName: true,
+            },
+          },
+        },
+      });
 
       return bookings;
     } catch (error) {
@@ -150,35 +168,35 @@ class BookingService {
 
   async updateBooking(bookingId: string, payload: IBookingRequestType) {
     try {
-      const booking = await prisma.booking.update({
-        where: {
-          id: bookingId,
-        },
-        data: {
-          bookingDate: payload.bookingDate,
-          carType: payload.carType,
-          licensePlate: payload.licensePlat,
-          customerId: payload.customerId,
-          timeslotId: payload.timeslotId,
-          status: payload.status,
-          promo: {
-            connect: payload.promo?.map((pr) => {
-              return {
-                id: pr.id,
-              };
-            }),
-          },
-          product: {
-            connect: payload.product.map((pd) => {
-              return {
-                id: pd.id,
-              };
-            }),
-          },
-        },
-      });
+      // const booking = await prisma.booking.update({
+      //   where: {
+      //     id: bookingId,
+      //   },
+      //   data: {
+      //     bookingDate: payload.bookingDate,
+      //     carType: payload.carType,
+      //     licensePlate: payload.licensePlat,
+      //     customerId: payload.customerId,
+      //     timeslotId: payload.timeslotId,
+      //     status: payload.status,
+      //     promo: {
+      //       connect: payload.promo?.map((pr) => {
+      //         return {
+      //           id: pr.id,
+      //         };
+      //       }),
+      //     },
+      //     product: {
+      //       connect: payload.product.map((pd) => {
+      //         return {
+      //           id: pd.id,
+      //         };
+      //       }),
+      //     },
+      //   },
+      // });
 
-      return booking;
+      return 'tes';
     } catch (error) {
       throw error;
     }

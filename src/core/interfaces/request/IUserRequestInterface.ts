@@ -9,3 +9,9 @@ export interface IUserRequestInterface {
   role: Role;
   customer: ICustomerRequestInterface;
 }
+
+export interface IUserProfileRequestInterface {
+  username: string;
+  email: string;
+  customer: ICustomerRequestInterface;
+}

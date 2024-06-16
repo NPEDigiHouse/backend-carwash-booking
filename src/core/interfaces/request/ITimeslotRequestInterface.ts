@@ -1,8 +1,5 @@
-import { DAY } from '@prisma/client';
-
 export interface ITimeslotRequestInterface {
-  day: DAY;
+  date: Date;
   time: string;
-  adminId: string;
   avaiableTime: boolean;
 }

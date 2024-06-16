@@ -33,7 +33,7 @@ class PromoRoute {
 
   updatePromo() {
     return this.route.put(
-      '/:PromoId',
+      '/:promoId',
       authToken,
       checkAdminAccees,
       this.promoController.updatePromo,
@@ -42,7 +42,7 @@ class PromoRoute {
 
   deletePromo() {
     return this.route.delete(
-      '/:PromoId',
+      '/:promoId',
       authToken,
       checkAdminAccees,
       this.promoController.deletePromo,

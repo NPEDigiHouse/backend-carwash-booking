@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import UserController from '../../controllers/User/UserController';
 import { authToken, checkAdminAccees } from '../../middleware/AuthMiddleware';
 import { routerConfig } from '../../config/routes/RoutesConfig';
+import { upload } from '../../middleware/MulterMiddleware';
 
 class UserRoute {
   route: Router;
@@ -46,8 +47,24 @@ class UserRoute {
       '/:userId',
       authToken,
       checkAdminAccees,
-      (req: Request, res: Response, next: NextFunction) =>
-        this.userController.updateUser(req, res, next),
+      this.userController.updateUser,
+    );
+  }
+
+  changeProfilePictureRoute() {
+    return this.route.put(
+      '/profile-picture/:userId',
+      authToken,
+      upload.single('profilePicture'),
+      this.userController.changeProfilePicture,
+    );
+  }
+
+  getUserProfilePictureRoute() {
+    return this.route.get(
+      '/profile-picture/:userId',
+      authToken,
+      this.userController.getUserProfilePicture,
     );
   }
 
@@ -56,6 +73,8 @@ class UserRoute {
     this.createUserRoute();
     this.deleteUserRoute();
     this.updateUserRoute();
+    this.changeProfilePictureRoute();
+    this.getUserProfilePictureRoute();
 
     return this.route;
   }

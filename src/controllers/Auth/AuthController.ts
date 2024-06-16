@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { AuthRepository } from '../../repository/Auth/AuthRepository';
 import { IUserRequestInterface } from '../../core/interfaces/request/IUserRequestInterface';
 import AuthServices from '../../service/Auth/AuthService';
 import UserServices from '../../service/User/UserService';
@@ -20,10 +19,14 @@ class AuthController {
     const payload: IUserRequestInterface = req.body;
 
     try {
-      const user = await AuthRepository.register({
+      const user = await this.service.register({
         email: payload.email,
         password: payload.password,
         username: payload.username,
+        customer: {
+          name: payload.customer.name,
+          phoneNumber: payload.customer.phoneNumber,
+        },
       });
 
       return res.json({
@@ -37,23 +40,30 @@ class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     const payload: IUserRequestInterface = req.body;
+    console.log('payload : ', payload);
 
     try {
-      const user = await AuthRepository.login({
+      const user = await this.service.login({
         email: payload.email,
         password: payload.password,
       });
+
+      console.log('user : ', user);
 
       return res.json({
         message: 'Login berhasil',
         data: user,
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.log('error message : ', error.stack);
+
       next(error);
     }
   }
 
   async credentials(req: Request, res: Response, next: NextFunction) {
+    console.log('user : ', req.signedCookies);
+
     try {
       const userCredential = req.signedCookies;
       const userDetail = await this.userService.getUserDetail(
