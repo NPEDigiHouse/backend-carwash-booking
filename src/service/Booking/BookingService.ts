@@ -45,6 +45,11 @@ class BookingService {
             ? product?.price
             : product!.price * (promo!.discount / 100);
 
+        const totalPrice =
+          !product?.price && !discountAmount
+            ? product?.price
+            : product!.price - discountAmount!;
+
         const booking = await db.booking.create({
           data: {
             bookingDate: bookingDate?.date!,
@@ -53,7 +58,7 @@ class BookingService {
             status: payload.status,
             customerId: payload.customerId,
             timeslotId: payload.timeslotId,
-            amount: discountAmount,
+            amount: totalPrice,
             receipt: payload.receipt,
             // promo: {
             //   connect: payload.promo?.map((pr) => {
@@ -210,6 +215,23 @@ class BookingService {
         },
         data: {
           status: 'CONFIRMATION',
+        },
+      });
+
+      return booking;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async cancelConfimBooking(bookingId: string) {
+    try {
+      const booking = await prisma.booking.update({
+        where: {
+          id: bookingId,
+        },
+        data: {
+          status: 'UNCONFIRMATION',
         },
       });
 

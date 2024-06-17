@@ -38,9 +38,28 @@ class BookingRoute {
     );
   }
 
+  confirmBookingRoute() {
+    return this.route.delete(
+      '/confirm/:bookingId',
+      authToken,
+      checkAdminAccees,
+
+      this.bookingController.confirmationBooking,
+    );
+  }
+
+  unconfirmBookingRoute() {
+    return this.route.delete(
+      '/unconfirm/:bookingId',
+      authToken,
+      checkAdminAccees,
+      this.bookingController.unconfirmationBooking,
+    );
+  }
+
   cancelCustomerBookingRoute() {
     return this.route.delete(
-      '/:bookingId',
+      '/cancel-booking/:bookingId',
       authToken,
       this.bookingController.cancelCustomerBooking,
     );
@@ -51,6 +70,8 @@ class BookingRoute {
     this.createBookingRoute();
     this.cancelCustomerBookingRoute();
     this.getAllBookingsRoute();
+    this.confirmBookingRoute();
+    this.unconfirmBookingRoute();
 
     return this.route;
   }

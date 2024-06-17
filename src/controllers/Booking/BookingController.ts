@@ -11,6 +11,8 @@ class BookingController {
     this.getCustomerBooking = this.getCustomerBooking.bind(this);
     this.cancelCustomerBooking = this.cancelCustomerBooking.bind(this);
     this.getAllBookings = this.getAllBookings.bind(this);
+    this.confirmationBooking = this.confirmationBooking.bind(this);
+    this.unconfirmationBooking = this.unconfirmationBooking.bind(this);
   }
 
   async createBooking(req: Request, res: Response, next: NextFunction) {
@@ -68,6 +70,34 @@ class BookingController {
     } catch (error) {
       console.log('error : ', error);
 
+      next(error);
+    }
+  }
+
+  async confirmationBooking(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { bookingId } = req.params;
+      const bookings = await this.service.confirmBooking(bookingId);
+
+      return res.json({
+        message: 'Berhasil konfirmasi booking',
+        data: bookings,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async unconfirmationBooking(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { bookingId } = req.params;
+      const bookings = await this.service.cancelConfimBooking(bookingId);
+
+      return res.json({
+        message: 'Berhasil membatalkan konfirmasi booking',
+        data: bookings,
+      });
+    } catch (error) {
       next(error);
     }
   }
