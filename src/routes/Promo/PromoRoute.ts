@@ -17,7 +17,7 @@ class PromoRoute {
     return this.route.get(
       '/',
       authToken,
-      checkAdminAccees,
+      // checkAdminAccees,
       this.promoController.getAllPromo,
     );
   }

@@ -25,6 +25,14 @@ class ProductRoute {
     );
   }
 
+  getProductDetail() {
+    return this.route.get(
+      '/:productId',
+      authToken,
+      this.productController.getProductDetail,
+    );
+  }
+
   updateProduct() {
     return this.route.put(
       '/:productId',
@@ -45,6 +53,7 @@ class ProductRoute {
 
   registerRoute(): Router {
     this.getAllProductsRoute();
+    this.getProductDetail();
     this.createProduct();
     this.deleteProduct();
     this.updateProduct();

@@ -41,6 +41,7 @@ model Booking {
   timeslotId Int
   amount Int? @default(0)
   receipt String?
+  phoneNumber String
   timeslot   Timeslot  @relation(fields: [timeslotId], references: [id])
   customerId  String
   customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)

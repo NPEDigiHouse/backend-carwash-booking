@@ -20,10 +20,12 @@ class AuthServices {
         throw new CustomError('Email atau password salah', 401);
       }
 
-      const checkPassword = BcryptLibsUtil.compareBcrypt(
+      const checkPassword = await BcryptLibsUtil.compareBcrypt(
         payload.password,
         user?.password,
       );
+
+      console.log('check password : ', checkPassword);
 
       if (!checkPassword) {
         throw new CustomError('Email atau password salah', 401);

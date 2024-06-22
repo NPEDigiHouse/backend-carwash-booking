@@ -22,8 +22,17 @@ class CustomerRoute {
     );
   }
 
+  getCustomerRoute() {
+    return this.route.get(
+      '/:id',
+      authToken,
+      this.customerController.getCustomerDetail,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllCustomersRoute();
+    this.getCustomerRoute();
 
     return this.route;
   }

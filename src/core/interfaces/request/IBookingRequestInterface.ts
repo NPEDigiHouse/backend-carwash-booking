@@ -21,4 +21,6 @@ export interface IBookingRequestType {
   // product: IProductRequestParamsRelationType[];
   promoId: number;
   productId: number;
+  bookingDate?: Date;
+  phoneNumber: string;
 }

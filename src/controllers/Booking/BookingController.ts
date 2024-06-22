@@ -11,7 +11,8 @@ class BookingController {
     this.getCustomerBooking = this.getCustomerBooking.bind(this);
     this.cancelCustomerBooking = this.cancelCustomerBooking.bind(this);
     this.getAllBookings = this.getAllBookings.bind(this);
-    this.confirmationBooking = this.confirmationBooking.bind(this);
+    this.getBookingDetail = this.getBookingDetail.bind(this);
+    this.updateConfirmationBooking = this.updateConfirmationBooking.bind(this);
     this.unconfirmationBooking = this.unconfirmationBooking.bind(this);
   }
 
@@ -36,7 +37,22 @@ class BookingController {
 
       return res.json({
         message: 'Berhasil mendapatkan data booking customer',
-        data: bookings,
+        data: bookings.map((booking) => {
+          return {
+            id: booking.id,
+            name: booking.customer.name,
+            carType: booking.carType,
+            carPlate: booking.licensePlate,
+            status: booking.status,
+            amount: booking.amount,
+            bookingDate: moment(booking.bookingDate).format('DD MMM YYYY'),
+            bookingTime: booking.timeslot.time,
+            service: `Car ${booking.product.productName.toLowerCase()}`,
+            promo: !booking.promo
+              ? 'tidak menggunakan promo'
+              : booking.promo.promoName,
+          };
+        }),
       });
     } catch (error) {
       next(error);
@@ -74,16 +90,61 @@ class BookingController {
     }
   }
 
-  async confirmationBooking(req: Request, res: Response, next: NextFunction) {
+  async getBookingDetail(req: Request, res: Response, next: NextFunction) {
+    console.log('params id : ', req.params);
+
     try {
       const { bookingId } = req.params;
-      const bookings = await this.service.confirmBooking(bookingId);
+      const booking = await this.service.getBookingDetail(bookingId);
+
+      return res.json({
+        message: 'Berhasil mendapatkan data booking',
+        data: {
+          id: booking?.id,
+          name: booking?.customer.name,
+          phoneNumber: booking?.customer.phoneNumber,
+          carType: booking?.carType,
+          carPlate: booking?.licensePlate,
+          status: booking?.status,
+          amount: booking?.amount,
+          bookingDate: moment(booking?.bookingDate).format('DD MMM YYYY'),
+          bookingTime: booking?.timeslot.time,
+          service: `Car ${booking?.product.productName.toLowerCase()}`,
+          promo: !booking?.promo
+            ? 'tidak menggunakan promo'
+            : booking.promo.promoName,
+          discount: booking?.promo?.discount,
+          productPrice: booking?.product.price,
+        },
+      });
+    } catch (error) {
+      console.log('error : ', error);
+
+      next(error);
+    }
+  }
+
+  async updateConfirmationBooking(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { bookingId } = req.params;
+      const { status } = req.body;
+      const booking = await this.service.updateConfirmationBooking(
+        bookingId,
+        status,
+      );
+      console.log('confirm status : ', booking);
 
       return res.json({
         message: 'Berhasil konfirmasi booking',
-        data: bookings,
+        data: booking,
       });
     } catch (error) {
+      console.log('confirm booking error : ', error);
+
       next(error);
     }
   }

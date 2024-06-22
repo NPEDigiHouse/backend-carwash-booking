@@ -23,7 +23,7 @@ class BookingRoute {
 
   getAllCustomerBookingsRoute() {
     return this.route.get(
-      '/:customerId',
+      '/customer/:customerId',
       authToken,
       this.bookingController.getCustomerBooking,
     );
@@ -38,19 +38,27 @@ class BookingRoute {
     );
   }
 
-  confirmBookingRoute() {
-    return this.route.delete(
-      '/confirm/:bookingId',
+  getBookingDetail() {
+    return this.route.get(
+      '/:bookingId',
+      authToken,
+      // checkAdminAccees,
+      this.bookingController.getBookingDetail,
+    );
+  }
+
+  updateConfirmationBookingRoute() {
+    return this.route.put(
+      '/:bookingId/confirmation',
       authToken,
       checkAdminAccees,
-
-      this.bookingController.confirmationBooking,
+      this.bookingController.updateConfirmationBooking,
     );
   }
 
   unconfirmBookingRoute() {
-    return this.route.delete(
-      '/unconfirm/:bookingId',
+    return this.route.put(
+      '/:bookingId/unconfirm',
       authToken,
       checkAdminAccees,
       this.bookingController.unconfirmationBooking,
@@ -65,12 +73,23 @@ class BookingRoute {
     );
   }
 
+  deleteBookingRoute() {
+    return this.route.delete(
+      '/:bookingId',
+      authToken,
+      checkAdminAccees,
+      this.bookingController.cancelCustomerBooking,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllCustomerBookingsRoute();
     this.createBookingRoute();
     this.cancelCustomerBookingRoute();
     this.getAllBookingsRoute();
-    this.confirmBookingRoute();
+    this.getBookingDetail();
+    this.updateConfirmationBookingRoute();
+    this.deleteBookingRoute();
     this.unconfirmBookingRoute();
 
     return this.route;

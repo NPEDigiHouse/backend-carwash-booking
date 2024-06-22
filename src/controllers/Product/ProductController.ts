@@ -10,6 +10,7 @@ class ProductController {
     this.createProduct = this.createProduct.bind(this);
     this.updateProduct = this.updateProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
+    this.getProductDetail = this.getProductDetail.bind(this);
   }
 
   async getAllProduct(req: Request, res: Response, next: NextFunction) {
@@ -19,6 +20,20 @@ class ProductController {
       return res.json({
         message: 'Berhasil menampilkan semua data product',
         data: products,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getProductDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { productId } = req.params;
+      const product = await this.service.getProductDetail(productId);
+
+      return res.json({
+        message: 'Berhasil menampilkan semua data product',
+        data: product,
       });
     } catch (error) {
       next(error);

@@ -1,9 +1,34 @@
 import prisma from '../../config/database';
+import { IBookingRequestType } from '../../core/interfaces/request/IBookingRequestInterface';
+import CustomError from '../../utils/common/CustomError';
 
 class CustomerService {
   async getAllCustomer() {
     try {
-      const customers = await prisma.customer.findMany();
+      const customers = await prisma.customer.findMany({
+        include: {
+          booking: {
+            include: {
+              product: {
+                select: {
+                  productName: true,
+                },
+              },
+              promo: {
+                select: {
+                  promoName: true,
+                },
+              },
+            },
+          },
+          user: {
+            select: {
+              email: true,
+              username: true,
+            },
+          },
+        },
+      });
 
       return customers;
     } catch (error) {
@@ -11,11 +36,41 @@ class CustomerService {
     }
   }
 
-  async getCustomerDetail(customerId: string) {
+  async getCustomerDetail(id: string) {
     try {
       const customer = await prisma.customer.findFirst({
         where: {
-          id: customerId,
+          OR: [
+            {
+              id,
+            },
+            {
+              user: {
+                id,
+              },
+            },
+          ],
+        },
+        include: {
+          booking: {
+            include: {
+              product: {
+                select: {
+                  productName: true,
+                },
+              },
+              promo: {
+                select: {
+                  promoName: true,
+                },
+              },
+              timeslot: {
+                select: {
+                  time: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -24,6 +79,42 @@ class CustomerService {
       throw error;
     }
   }
+
+  // async customerCreateBooking(customerId: string, payload: IBookingRequestType) {
+  //   try {
+
+  //     const customerBooking = await prisma.$transaction(async db => {
+
+  //       if(!payload.bookingDate) {
+  //         throw new CustomError("Booking date tidak dipilih", 404)
+  //       }
+
+  //       const booking = await db.customer.create({
+  //         data: {
+  //           booking: {
+  //             connectOrCreate: {
+  //               where: {
+  //                 id: customerId
+  //               },
+  //               create: {
+  //                 bookingDate: payload.bookingDate,
+  //                 carType: payload.carType,
+  //                 licensePlate: payload.licensePlate,
+  //                 productId: payload.productId,
+  //                 timeslotId: payload.timeslotId,
+  //                 promoId: payload.promoId
+
+  //               }
+  //             }
+  //           }
+  //         }
+  //       })
+  //     })
+
+  //   } catch (error) {
+
+  //   }
+  // }
 
   async updateCustomer() {}
 }

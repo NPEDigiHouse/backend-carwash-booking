@@ -46,6 +46,7 @@ class UserServices {
           role: true,
           customer: {
             select: {
+              id: true,
               name: true,
             },
           },

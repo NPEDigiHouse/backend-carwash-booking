@@ -1,9 +1,13 @@
+import { log } from 'console';
 import prisma from '../../config/database';
 import { IBookingRequestType } from '../../core/interfaces/request/IBookingRequestInterface';
 import CustomError from '../../utils/common/CustomError';
+import { BookingStatus } from '@prisma/client';
 
 class BookingService {
   async createBooking(payload: IBookingRequestType) {
+    console.log('payload booking : ', payload);
+
     try {
       const bookingTr = await prisma.$transaction(async (db) => {
         const customerBooking = await db.booking.findFirst({
@@ -45,10 +49,14 @@ class BookingService {
             ? product?.price
             : product!.price * (promo!.discount / 100);
 
+        console.log('discount amount : ', discountAmount);
+
         const totalPrice =
           !product?.price && !discountAmount
             ? product?.price
             : product!.price - discountAmount!;
+
+        console.log('total price : ', totalPrice);
 
         const booking = await db.booking.create({
           data: {
@@ -60,6 +68,7 @@ class BookingService {
             timeslotId: payload.timeslotId,
             amount: totalPrice,
             receipt: payload.receipt,
+            phoneNumber: payload.phoneNumber,
             // promo: {
             //   connect: payload.promo?.map((pr) => {
             //     return {
@@ -130,12 +139,24 @@ class BookingService {
   }
 
   async getBookingDetail(bookingId: string) {
+    console.log('booking id : ', bookingId);
+
     try {
       const booking = await prisma.booking.findFirst({
         where: {
           id: bookingId,
         },
+        include: {
+          customer: true,
+          product: true,
+          promo: true,
+          timeslot: true,
+        },
       });
+
+      // if (!booking) {
+      //   throw new CustomError(`Booking tidak ditemukan`, 404);
+      // }
 
       return booking;
     } catch (error) {
@@ -149,7 +170,33 @@ class BookingService {
         where: {
           customerId,
         },
+        include: {
+          customer: {
+            select: {
+              name: true,
+            },
+          },
+          product: {
+            select: {
+              productName: true,
+            },
+          },
+          promo: {
+            select: {
+              promoName: true,
+            },
+          },
+          timeslot: {
+            select: {
+              time: true,
+            },
+          },
+        },
       });
+
+      if (!bookings) {
+        throw new CustomError(`Booking tidak ditemukan`, 404);
+      }
 
       return bookings;
     } catch (error) {
@@ -207,14 +254,14 @@ class BookingService {
     }
   }
 
-  async confirmBooking(bookingId: string) {
+  async updateConfirmationBooking(bookingId: string, status: BookingStatus) {
     try {
       const booking = await prisma.booking.update({
         where: {
           id: bookingId,
         },
         data: {
-          status: 'CONFIRMATION',
+          status,
         },
       });
 

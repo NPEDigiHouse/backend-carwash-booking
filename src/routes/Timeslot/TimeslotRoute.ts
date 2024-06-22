@@ -17,7 +17,7 @@ class TimeslotRoute {
     return this.route.get(
       '/',
       authToken,
-      checkAdminAccees,
+      // checkAdminAccees,
       this.timeslotController.getAllTimeslots,
     );
   }
