@@ -8,6 +8,7 @@ class TimeslotController {
   constructor(service: TimeslotService) {
     this.service = service;
     this.getAllTimeslots = this.getAllTimeslots.bind(this);
+    this.getTimeslotDetail = this.getAllTimeslots.bind(this);
     this.createTimeslot = this.createTimeslot.bind(this);
     this.updateTimeslot = this.updateTimeslot.bind(this);
     this.deleteTimeslot = this.deleteTimeslot.bind(this);
@@ -33,6 +34,21 @@ class TimeslotController {
             avaiableTime: timeslot.avaiableTime,
           };
         }),
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getTimeslotDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const timeslotId = req.params;
+
+      const timeslot = await this.service.getTimeslotDetail(Number(timeslotId));
+
+      return res.json({
+        message: 'Berhasil semua data timeslot',
+        data: timeslot,
       });
     } catch (error) {
       next(error);

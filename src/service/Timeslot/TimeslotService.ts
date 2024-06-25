@@ -28,6 +28,20 @@ class TimeslotService {
     }
   }
 
+  async getTimeslotDetail(timeslotId: number) {
+    try {
+      const timeslot = await prisma.timeslot.findFirst({
+        where: {
+          id: timeslotId,
+        },
+      });
+
+      return timeslot;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteTimeslot(timeslotId: number) {
     try {
       const timeslot = await prisma.timeslot.delete({

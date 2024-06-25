@@ -22,6 +22,15 @@ class TimeslotRoute {
     );
   }
 
+  getTimeslotDetailRoute() {
+    return (
+      this.route.get('/:timeslotId'),
+      authToken,
+      checkAdminAccees,
+      this.timeslotController.getTimeslotDetail
+    );
+  }
+
   createTimeslot() {
     return this.route.post(
       '/',
@@ -51,6 +60,7 @@ class TimeslotRoute {
 
   registerRoute(): Router {
     this.getAllTimeslotsRoute();
+    this.getTimeslotDetailRoute();
     this.createTimeslot();
     this.deleteTimeslot();
     this.updateTimeslot();
