@@ -7,8 +7,8 @@ class PromoService {
       const promo = await prisma.promo.create({
         data: {
           discount: payload.discount,
-          endDate: payload.endDate,
           startedDate: payload.startedDate,
+          endDate: payload.endDate,
           promoName: payload.promoName,
         },
       });
@@ -47,6 +47,8 @@ class PromoService {
         },
       });
 
+      console.log('update promo : ', payload);
+
       return promo;
     } catch (error) {
       throw error;
@@ -58,6 +60,20 @@ class PromoService {
       const promos = await prisma.promo.findMany();
 
       return promos;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDetailPromo(promoId: number) {
+    try {
+      const promo = await prisma.promo.findFirst({
+        where: {
+          id: promoId,
+        },
+      });
+
+      return promo;
     } catch (error) {
       throw error;
     }

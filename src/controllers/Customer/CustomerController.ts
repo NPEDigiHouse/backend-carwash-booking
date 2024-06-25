@@ -9,6 +9,7 @@ class CustomerController {
     this.service = service;
     this.getAllCustomer = this.getAllCustomer.bind(this);
     this.getCustomerDetail = this.getCustomerDetail.bind(this);
+    this.deleteCustomer = this.deleteCustomer.bind(this);
   }
 
   async getAllCustomer(req: Request, res: Response, next: NextFunction) {
@@ -22,7 +23,7 @@ class CustomerController {
         data: customers,
       });
     } catch (error) {
-      throw error;
+      next(error);
     }
   }
 
@@ -57,7 +58,20 @@ class CustomerController {
         },
       });
     } catch (error) {
-      throw error;
+      next(error);
+    }
+  }
+
+  async deleteCustomer(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { customerId } = req.params;
+      const customer = await this.service.deleteCustomer(customerId);
+
+      return res.json({
+        message: 'Berhasil menghapus data customer',
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

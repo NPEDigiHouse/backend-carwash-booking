@@ -10,6 +10,7 @@ class PromoController {
     this.createPromo = this.createPromo.bind(this);
     this.deletePromo = this.deletePromo.bind(this);
     this.updatePromo = this.updatePromo.bind(this);
+    this.getDetailPromo = this.getDetailPromo.bind(this);
   }
 
   async getAllPromo(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +22,23 @@ class PromoController {
         data: promos,
       });
     } catch (error) {
-      throw error;
+      next(error);
+    }
+  }
+
+  async getDetailPromo(req: Request, res: Response, next: NextFunction) {
+    console.log('id params : ', req.params);
+
+    try {
+      const { promoId } = req.params;
+      const promo = await this.service.getDetailPromo(Number(promoId));
+
+      return res.json({
+        message: 'Berhasil menampilkan detail promo',
+        data: promo,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -57,6 +74,7 @@ class PromoController {
   async updatePromo(req: Request, res: Response, next: NextFunction) {
     try {
       const payload = req.body;
+
       const { promoId } = req.params;
       const promo = await this.service.updatePromo(Number(promoId), payload);
 

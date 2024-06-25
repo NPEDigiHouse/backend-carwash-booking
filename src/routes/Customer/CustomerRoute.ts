@@ -30,9 +30,19 @@ class CustomerRoute {
     );
   }
 
+  deleteCustomerRoute() {
+    return this.route.delete(
+      '/:customerId',
+      authToken,
+      checkAdminAccees,
+      this.customerController.deleteCustomer,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllCustomersRoute();
     this.getCustomerRoute();
+    this.deleteCustomerRoute();
 
     return this.route;
   }

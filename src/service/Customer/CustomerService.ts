@@ -80,6 +80,24 @@ class CustomerService {
     }
   }
 
+  async deleteCustomer(customerId: string) {
+    try {
+      const customer = await prisma.customer.delete({
+        where: {
+          id: customerId,
+        },
+      });
+
+      if (!customer) {
+        throw new CustomError('Customer tidak ditemukan', 404);
+      }
+
+      return customer;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // async customerCreateBooking(customerId: string, payload: IBookingRequestType) {
   //   try {
 

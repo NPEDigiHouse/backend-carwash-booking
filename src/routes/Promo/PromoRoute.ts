@@ -49,8 +49,18 @@ class PromoRoute {
     );
   }
 
+  getDetailPromo() {
+    return this.route.get(
+      '/:promoId',
+      authToken,
+      checkAdminAccees,
+      this.promoController.getDetailPromo,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllPromosRoute();
+    this.getDetailPromo();
     this.createPromo();
     this.deletePromo();
     this.updatePromo();
