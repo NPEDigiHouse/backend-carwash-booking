@@ -53,6 +53,7 @@ class TimeslotRoute {
     this.getAllTimeslotsRoute();
     this.createTimeslot();
     this.deleteTimeslot();
+    this.updateTimeslot();
 
     return this.route;
   }
