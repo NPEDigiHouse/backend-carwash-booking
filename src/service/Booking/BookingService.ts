@@ -97,6 +97,27 @@ class BookingService {
     }
   }
 
+  async uploadReceipt(bookingId: string, receipt: string) {
+    try {
+      const user = await prisma.booking.update({
+        where: {
+          id: bookingId,
+        },
+        data: {
+          receipt: receipt,
+        },
+        select: {
+          id: true,
+          receipt: true,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllBooking() {
     try {
       const bookings = await prisma.booking.findMany({
@@ -114,6 +135,7 @@ class BookingService {
           status: true,
           amount: true,
           bookingDate: true,
+          receipt: true,
           timeslot: {
             select: {
               time: true,
@@ -256,12 +278,15 @@ class BookingService {
 
   async updateConfirmationBooking(bookingId: string, status: BookingStatus) {
     try {
+      const updatePaymentStat =
+        status === 'CONFIRMATION' ? 'COMPLETED' : 'PENDING';
       const booking = await prisma.booking.update({
         where: {
           id: bookingId,
         },
         data: {
           status,
+          paymentStatus: updatePaymentStat,
         },
       });
 
@@ -279,6 +304,7 @@ class BookingService {
         },
         data: {
           status: 'UNCONFIRMATION',
+          paymentStatus: 'CANCELED',
         },
       });
 
