@@ -60,6 +60,18 @@ class AuthServices {
         },
       });
 
+      // const customer = await prisma.customer.create({
+      //   data: {
+      //     user: {
+      //       connect: {
+      //         id: user.id,
+      //       },
+      //     },
+      //     name: payload.customer.name,
+      //     phoneNumber: payload.customer.phoneNumber,
+      //   },
+      // });
+
       return user;
     } catch (error) {
       throw error;
