@@ -4,6 +4,11 @@ export interface ICustomerRequestInterface {
   name: string;
   phoneNumber: string;
   profilePicture?: string;
+}
 
-  // userId: string;
+export interface ICustomerUserRecordRequestInterface {
+  customer: ICustomerRequestInterface;
+  username: string;
+  email: string;
+  id: string;
 }
