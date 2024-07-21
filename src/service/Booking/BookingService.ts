@@ -45,18 +45,14 @@ class BookingService {
         });
 
         const discountAmount =
-          !product?.price && !promo?.discount
+          !product?.price || !promo?.discount
             ? product?.price
-            : product!.price * (promo!.discount / 100);
-
-        console.log('discount amount : ', discountAmount);
+            : product.price * (promo.discount / 100);
 
         const totalPrice =
           !product?.price && !discountAmount
             ? product?.price
             : product!.price - discountAmount!;
-
-        console.log('total price : ', totalPrice);
 
         const booking = await db.booking.create({
           data: {
@@ -76,6 +72,7 @@ class BookingService {
             //     };
             //   }),
             // },
+
             // product: {
             //   connect: payload.product.map((pd) => {
             //     return {
@@ -83,7 +80,7 @@ class BookingService {
             //     };
             //   }),
             // },
-            promoId: payload.promoId,
+            promoId: !payload.promoId ? null : payload.promoId,
             productId: payload.productId,
           },
         });
@@ -93,6 +90,8 @@ class BookingService {
 
       return bookingTr;
     } catch (error) {
+      console.log('error : ', error);
+
       throw error;
     }
   }

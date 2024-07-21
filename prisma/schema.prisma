@@ -21,7 +21,7 @@ model User {
   role Role @default(CUSTOMER)
   profilePicture String?
   customerId  String? @unique
-  customer  Customer?  @relation(fields: [customerId], references: [id])
+  customer  Customer?  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   
 }
 
@@ -46,12 +46,12 @@ model Booking {
   customerId  String
   customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   status BookingStatus @default(UNCONFIRMATION)
-  productId Int @unique
+  productId Int
   product Product @relation(fields: [productId], references: [id])
   // product Product[]
   paymentStatus PaymentStatus @default(PENDING)
   // promo Promo[]
-  promoId Int @unique
+  promoId Int? @unique
   promo Promo? @relation(fields: [promoId], references: [id])
   
 }
@@ -70,15 +70,15 @@ model Product {
   id Int @id @default(autoincrement())
   productName ProductType
   price Int
-  // bookings Booking[]
-  booking Booking?
+  bookings Booking[]
+  // booking Booking?
 }
 
 model Promo {
   id Int @id @default(autoincrement())
   promoName String
   discount Int
-  booking Booking?
+  booking Booking[]
   startedDate DateTime
   endDate DateTime
 }
