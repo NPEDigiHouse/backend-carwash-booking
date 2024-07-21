@@ -55,7 +55,7 @@ class UserRoute {
     return this.route.put(
       '/profile-picture/:userId',
       authToken,
-      upload.single('profilePicture'),
+      upload('profile').single('profilePicture'),
       this.userController.changeProfilePicture,
     );
   }
