@@ -99,6 +99,8 @@ class BookingController {
       const { bookingId } = req.params;
       const booking = await this.service.getBookingDetail(bookingId);
 
+      console.log('booking detail : ', booking);
+
       return res.json({
         message: 'Berhasil mendapatkan data booking',
         data: {
@@ -116,7 +118,7 @@ class BookingController {
           promo: !booking?.promo
             ? 'tidak menggunakan promo'
             : booking.promo.promoName,
-          discount: booking?.promo?.discount,
+          discount: !booking?.promo ? 0 : booking?.promo?.discount,
           productPrice: booking?.product.price,
         },
       });
