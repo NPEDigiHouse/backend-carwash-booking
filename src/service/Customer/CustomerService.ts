@@ -1,5 +1,6 @@
 import prisma from '../../config/database';
 import { IBookingRequestType } from '../../core/interfaces/request/IBookingRequestInterface';
+import { ICustomerUserRecordRequestInterface } from '../../core/interfaces/request/ICustomerRequestInterface';
 import CustomError from '../../utils/common/CustomError';
 
 class CustomerService {
@@ -71,6 +72,13 @@ class CustomerService {
               },
             },
           },
+          user: {
+            select: {
+              id: true,
+              email: true,
+              username: true,
+            },
+          },
         },
       });
 
@@ -91,6 +99,36 @@ class CustomerService {
       if (!customer) {
         throw new CustomError('Customer tidak ditemukan', 404);
       }
+
+      return customer;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCustomer(
+    customerId: string,
+    payload: ICustomerUserRecordRequestInterface,
+  ) {
+    try {
+      const customer = await prisma.customer.update({
+        where: {
+          id: customerId,
+        },
+        data: {
+          name: payload.customer.name,
+          phoneNumber: payload.customer.phoneNumber,
+          user: {
+            connect: {
+              id: payload.id,
+            },
+            update: {
+              email: payload.email,
+              username: payload.username,
+            },
+          },
+        },
+      });
 
       return customer;
     } catch (error) {
@@ -133,8 +171,6 @@ class CustomerService {
 
   //   }
   // }
-
-  async updateCustomer() {}
 }
 
 export default CustomerService;

@@ -39,10 +39,20 @@ class CustomerRoute {
     );
   }
 
+  updateCustomerRoute() {
+    return this.route.put(
+      '/:customerId',
+      authToken,
+      checkAdminAccees,
+      this.customerController.updateCustomer,
+    );
+  }
+
   registerRoute(): Router {
     this.getAllCustomersRoute();
     this.getCustomerRoute();
     this.deleteCustomerRoute();
+    this.updateCustomerRoute();
 
     return this.route;
   }
