@@ -23,11 +23,11 @@ class TimeslotRoute {
   }
 
   getTimeslotDetailRoute() {
-    return (
-      this.route.get('/:timeslotId'),
+    return this.route.get(
+      '/:timeslotId',
       authToken,
       checkAdminAccees,
-      this.timeslotController.getTimeslotDetail
+      this.timeslotController.getTimeslotDetail,
     );
   }
 

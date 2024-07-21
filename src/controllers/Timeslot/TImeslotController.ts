@@ -8,7 +8,7 @@ class TimeslotController {
   constructor(service: TimeslotService) {
     this.service = service;
     this.getAllTimeslots = this.getAllTimeslots.bind(this);
-    this.getTimeslotDetail = this.getAllTimeslots.bind(this);
+    this.getTimeslotDetail = this.getTimeslotDetail.bind(this);
     this.createTimeslot = this.createTimeslot.bind(this);
     this.updateTimeslot = this.updateTimeslot.bind(this);
     this.deleteTimeslot = this.deleteTimeslot.bind(this);
@@ -41,13 +41,15 @@ class TimeslotController {
   }
 
   async getTimeslotDetail(req: Request, res: Response, next: NextFunction) {
+    console.log('params : ', req.params);
+
     try {
-      const timeslotId = req.params;
+      const { timeslotId } = req.params;
 
       const timeslot = await this.service.getTimeslotDetail(Number(timeslotId));
 
       return res.json({
-        message: 'Berhasil semua data timeslot',
+        message: 'Berhasil mendapatkan detail timeslot',
         data: timeslot,
       });
     } catch (error) {
