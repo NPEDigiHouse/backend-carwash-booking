@@ -20,7 +20,7 @@ class TimeslotService {
 
   async getAllTimeslot() {
     try {
-      const timeslots = await prisma.timeslot.findMany({});
+      const timeslots = await prisma.timeslot.findMany();
 
       return timeslots;
     } catch (error) {
@@ -29,6 +29,8 @@ class TimeslotService {
   }
 
   async getTimeslotDetail(timeslotId: number) {
+    console.log('timeslot id : ', timeslotId);
+
     try {
       const timeslot = await prisma.timeslot.findFirst({
         where: {
