@@ -14,6 +14,7 @@ class BookingController {
     this.getBookingDetail = this.getBookingDetail.bind(this);
     this.updateConfirmationBooking = this.updateConfirmationBooking.bind(this);
     this.unconfirmationBooking = this.unconfirmationBooking.bind(this);
+    this.uploadReceipt = this.uploadReceipt.bind(this);
   }
 
   async createBooking(req: Request, res: Response, next: NextFunction) {
@@ -74,6 +75,7 @@ class BookingController {
             carPlate: booking.licensePlate,
             status: booking.status,
             amount: booking.amount,
+            receipt: booking.receipt,
             bookingDate: moment(booking.bookingDate).format('DD MMM YYYY'),
             bookingTime: booking.timeslot.time,
             service: `Car ${booking.product.productName.toLowerCase()}`,
@@ -107,6 +109,7 @@ class BookingController {
           carPlate: booking?.licensePlate,
           status: booking?.status,
           amount: booking?.amount,
+          receipt: booking?.receipt,
           bookingDate: moment(booking?.bookingDate).format('DD MMM YYYY'),
           bookingTime: booking?.timeslot.time,
           service: `Car ${booking?.product.productName.toLowerCase()}`,
@@ -120,6 +123,27 @@ class BookingController {
     } catch (error) {
       console.log('error : ', error);
 
+      next(error);
+    }
+  }
+
+  async uploadReceipt(req: Request, res: Response, next: NextFunction) {
+    try {
+      const params = req.params;
+      const receipt = req.file?.filename as any;
+
+      console.log('receipt : ', receipt);
+
+      const bookingReceipt = await this.service.uploadReceipt(
+        params.bookingId,
+        receipt,
+      );
+
+      return res.json({
+        message: 'Berhasil upload bukti pembayaran',
+        data: bookingReceipt,
+      });
+    } catch (error) {
       next(error);
     }
   }

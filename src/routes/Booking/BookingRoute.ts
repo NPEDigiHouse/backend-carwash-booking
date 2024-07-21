@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { authToken, checkAdminAccees } from '../../middleware/AuthMiddleware';
 import { routerConfig } from '../../config/routes/RoutesConfig';
 import BookingController from '../../controllers/Booking/BookingController';
+import { upload } from '../../middleware/MulterMiddleware';
 
 class BookingRoute {
   route: Router;
@@ -56,6 +57,15 @@ class BookingRoute {
     );
   }
 
+  uploadReceipt() {
+    return this.route.put(
+      '/:bookingId/upload-receipt',
+      authToken,
+      upload('booking').single('receipt'), 
+      this.bookingController.uploadReceipt,
+    );
+  }
+
   unconfirmBookingRoute() {
     return this.route.put(
       '/:bookingId/unconfirm',
@@ -91,6 +101,7 @@ class BookingRoute {
     this.updateConfirmationBookingRoute();
     this.deleteBookingRoute();
     this.unconfirmBookingRoute();
+    this.uploadReceipt();
 
     return this.route;
   }
