@@ -61,7 +61,7 @@ class BookingRoute {
     return this.route.put(
       '/:bookingId/upload-receipt',
       authToken,
-      upload('booking').single('receipt'), 
+      upload('booking').single('receipt'),
       this.bookingController.uploadReceipt,
     );
   }
@@ -87,7 +87,7 @@ class BookingRoute {
     return this.route.delete(
       '/:bookingId',
       authToken,
-      checkAdminAccees,
+      // checkAdminAccees,
       this.bookingController.cancelCustomerBooking,
     );
   }
