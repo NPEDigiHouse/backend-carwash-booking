@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build": "npx tsc",
+    "start": "node ./dist/app.js",
     "dev": "nodemon ./app.ts",
     "migrate": "prisma migrate dev",
     "seed": "ts-node prisma/seed.ts"
