@@ -44,15 +44,31 @@ class BookingService {
           },
         });
 
-        const discountAmount =
-          !product?.price || !promo?.discount
-            ? product?.price
-            : product.price * (promo.discount / 100);
+        let totalPrice = product?.price;
 
-        const totalPrice =
-          !product?.price && !discountAmount
-            ? product?.price
-            : product!.price - discountAmount!;
+        if (product?.price) {
+          let discountAmount = 0;
+          if (promo?.discount) {
+            discountAmount = product.price * (promo?.discount / 100);
+          }
+
+          if (product.price >= discountAmount) {
+            totalPrice = product.price - discountAmount!;
+            console.log('total price : ', totalPrice);
+          }
+        }
+
+        // const discountAmount =
+        //   !product?.price || !promo?.discount
+        //     ? product?.price
+        //     : product.price * (promo.discount / 100);
+
+        // const totalPrice =
+        //   !product?.price || !discountAmount
+        //     ? product?.price
+        //     : product.price - discountAmount!;
+
+        // console.log('total price : ', discountAmount);
 
         const booking = await db.booking.create({
           data: {
